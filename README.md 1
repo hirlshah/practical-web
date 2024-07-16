@@ -563,3 +563,50 @@ docker build -t mynodeapp .
 docker run -it -p 3000:3000 mynodeapp
 
 ```
+
+
+### Execution Instructions
+
+### Docker Deployment
+- `Navigate to the directory containing the inventory file and playbook file`
+- `nginx_setup.yml`
+
+
+### Build the Docker image
+```Build the Docker image
+docker build -t mynodeapp .
+
+```
+### Run the Docker container
+```Run the Docker container
+docker run -it -p 3000:3000 mynodeapp
+
+```
+
+### Kubernetes Deployment
+
+### Apply the deployment configuration
+```Apply the deployment configuration
+
+kubectl apply -f deployment.yaml
+
+```
+### Run the Docker container
+```Run the Docker container
+docker run -it -p 3000:3000 mynodeapp
+
+```
+### Provisioning and Configuration with Terraform and Ansible
+```Provisioning and Configuration with Terraform and Ansible
+terraform init
+terraform fmt
+terraform plan
+terraform apply -var="key_name=web-cluse"
+
+```
+
+### Run the Ansible playbook
+```Run the Ansible playbook
+ansible-playbook -i hosts.ini nginx_setup.yml
+```
+This covers all the tasks, configurations, and instructions needed to reproduce the work done in this project.
