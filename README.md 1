@@ -1,1 +1,240 @@
+# Project Tasks Overview
+
+This README provides a detailed overview of the tasks completed for deploying a simple Node.js application in a Docker container, creating a Kubernetes deployment configuration, and provisioning resources and configuration management through Terraform and Ansible.
+
+## Task 1: Simple Node.js Application Deployment on Docker Container
+
+### Description
+This task involves creating a Dockerfile to deploy a simple Node.js application that listens on port 3000. The Dockerfile makes use of a lightweight base image, installs the necessary dependencies, copies the application code, and specifies the command to run the application.
+
+### Deliverables
+- `Dockerfile`
+
+### Dockerfile
+```dockerfile
+# Use a lightweight node image
+FROM node:14-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose application on port 3000
+EXPOSE 3000
+
+# Command to run the application
+CMD ["node", "app.js"]
+
+```
+
+
+
+
+## Contributing
+## Task 2: Kubernetes Deployment
+
+### Description
+This task involves creating a Kubernetes deployment configuration for a web application using the nginx:latest image. The deployment should have 3 replicas, expose port 80, and include both liveness and readiness probes. It should also ensure guaranteed QOS for deployments.
+
+
+### Deliverables
+- `deployment.yaml`
+
+### deployment.yaml
+```deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "64Mi"
+            cpu: "250m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+```
+
+
+## Contributing
+## Task3: Resource Provisioning and Configuration Management through Terraform and Ansible
+
+
+### Description
+This task involves:
+Creating a Terraform script to provision an EC2 instance with necessary security group and VPC configurations.
+Configuring the instance with an NGINX web server and other necessary configurations.
+Deploying the Node.js application created in Task 1 on the same NGINX web server using Ansible.
+
+
+### Deliverables
+- `main.tf`
+- `variable.tf`
+- `output.tf`
+- `terraform.tfvars`
+
+
+- `Ansible playbooks and roles`
+- `NGINX configuration files`
+
+
+
+### main.tf
+```main.tf
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "main_vpc"
+  }
+}
+
+resource "aws_subnet" "main" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "ap-south-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "main_subnet"
+  }
+}
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "main_igw"
+  }
+}
+
+resource "aws_route_table" "main" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+
+  tags = {
+    Name = "main_rt"
+  }
+}
+
+resource "aws_route_table_association" "main" {
+  subnet_id      = aws_subnet.main.id
+  route_table_id = aws_route_table.main.id
+}
+
+resource "aws_security_group" "web_sg" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "web_sg"
+  }
+}
+
+resource "aws_instance" "web" {
+  ami                    = "ami-0c2af51e265bd5e0e" # Ubuntu 22.04 LTS AMI for ap-south-1
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.main.id
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "nginx_web_server"
+  }
+
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update -y
+              sudo apt install -y nginx
+              sudo systemctl start nginx
+              sudo systemctl enable nginx
+            EOF
+}
+```
+
+
+### variable.tf
+```variable.tf
+variable "key_name" {
+  description = "The name of the key pair to use for SSH access."
+  type        = string
+}
+```
+
+### output.tf
+```output.tf
+output "instance_public_ip" {
+  description = "The public IP address of the EC2 instance"
+  value       = aws_instance.web.public_ip
+}
+```
+
+### terraform.tfvars 
+```terraform.tfvars 
+key_name = "web-cluse"
+```
+
 
