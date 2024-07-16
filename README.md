@@ -609,4 +609,21 @@ terraform apply -var="key_name=web-cluse"
 ```Run the Ansible playbook
 ansible-playbook -i hosts.ini nginx_setup.yml
 ```
+
+### Task1 : Node URL
+```Task1 : Node URL
+http://3.110.164.90:3000/
+```
+
+### Task2 : EKS Cluster Loadbalancer URL
+```Task2 EKS Cluster Loadbalancer URL
+http://a57743179895f492eadfefb94858a6aa-1004128208.ap-south-1.elb.amazonaws.com
+```
+
+### Task3 : Ansible task URL
+```Ansible task URL
+http://3.110.218.31/
+```
+
+
 This covers all the tasks, configurations, and instructions needed to reproduce the work done in this project.
