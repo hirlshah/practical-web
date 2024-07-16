@@ -36,7 +36,7 @@ CMD ["node", "app.js"]
 
 
 
-## Contributing
+
 ## Task 2: Kubernetes Deployment
 
 ### Description
@@ -90,7 +90,7 @@ spec:
 ```
 
 
-## Contributing
+
 ## Task3: Resource Provisioning and Configuration Management through Terraform and Ansible
 
 
@@ -240,7 +240,7 @@ key_name = "web-cluse"
 
 
 
-## Contributing
+
 ## Task 3: Ansible Nginx and Node.js Deployment
 
 
@@ -381,11 +381,11 @@ This Ansible playbook sets up an Nginx server and deploys a Node.js application 
         state: restarted
 ```
 
-## Contributing
 
 
 
-## Contributing
+
+
 ## Task 2: Ansible Nginx and Node.js Deployment
 
 
@@ -526,7 +526,7 @@ This Ansible playbook sets up an Nginx server and deploys a Node.js application 
         state: restarted
 ```
 
-## Contributing
+
 
 ### Usage
 
