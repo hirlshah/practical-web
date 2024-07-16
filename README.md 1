@@ -1,17 +1,13 @@
-# Project Tasks Overview
-
+Project Tasks Overview
 This README provides a detailed overview of the tasks completed for deploying a simple Node.js application in a Docker container, creating a Kubernetes deployment configuration, and provisioning resources and configuration management through Terraform and Ansible.
 
-## Task 1: Simple Node.js Application Deployment on Docker Container
-
-### Description
+Task 1: Simple Node.js Application Deployment on Docker Container
+Description
 This task involves creating a Dockerfile to deploy a simple Node.js application that listens on port 3000. The Dockerfile uses a lightweight base image, installs the necessary dependencies, copies the application code, and specifies the command to run the application.
 
-### Deliverables
-- `Dockerfile`
-
-### Dockerfile
-```dockerfile
+Deliverables
+Dockerfile
+Dockerfile
 # Use a lightweight node image
 FROM node:14-alpine
 
