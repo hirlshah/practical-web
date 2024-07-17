@@ -537,7 +537,7 @@ This Ansible playbook sets up an Nginx server and deploys a Node.js application 
 
 ### Navigate to the directory containing the inventory file and playbook file
 ```Navigate to the directory containing the inventory file and playbook file
-cd /path/to/practical-web/ansible
+cd /home/ubuntu/ansible
 
 ```
 ### Run the Ansible playbook using the ansible-playbook command.
