@@ -1,16 +1,18 @@
-FROM node
+# Use a lightweight node image
+FROM node:14-alpine
 
-RUN npm cache clean --force
-RUN npm install -g nodemon
-
+# Set the working directory
 WORKDIR /app
 
-COPY package.json .
-
+# Copy package.json and install dependencies
+COPY package.json ./
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
+# Expose application on port 3000
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+# Command to run the application
+CMD ["node", "app.js"]
