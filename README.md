@@ -392,7 +392,7 @@ This Ansible playbook sets up an Nginx server and deploys a Node.js application 
 
 ### Deliverables
 - `Navigate to the directory containing the inventory file and playbook file`
-- `nginx_setup.yml`
+- `Run the Ansible playbook using the ansible-playbook command`
 
 
 ### Navigate to the directory containing the inventory file and playbook file
@@ -409,8 +409,6 @@ ansible-playbook -i hosts.ini nginx_setup.yml
 ### Execution Instructions
 
 ### Docker Deployment
-- `nginx_setup.yml`
-
 
 ### Build the Docker image
 ```Build the Docker image
