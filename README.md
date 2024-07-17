@@ -386,146 +386,6 @@ This Ansible playbook sets up an Nginx server and deploys a Node.js application 
 
 
 
-## Task 2: Ansible Nginx and Node.js Deployment
-
-
-### Description
-This Ansible playbook sets up an Nginx server and deploys a Node.js application inside a Docker container. It also configures Nginx as a reverse proxy to forward requests to the Node.js application.
-
-
-### Prerequisites
-- `Ansible installed on your local machine.`
-- `An SSH key pair set up for the Ansible user on the target server.`
-- `The target server should be an Ubuntu instance.`
-- `The path to the SSH private key file, which has permissions to access the target server.l`
-
-### Deliverables
-- `hosts.ini`
-- `nginx_setup.yml`
-
-
-### hosts.ini
-```hosts.ini
-3.110.218.31 ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/web-cluse.pem
-
-```
-
-### nginx_setup.yml
-```nginx_setup.yml
----
-- name: Setup Nginx and Deploy Node.js App
-  hosts: webserver
-  become: yes
-  tasks:
-    - name: Update aptitude cache and upgrade the system packages
-      apt:
-        update_cache: yes
-        upgrade: dist
-        cache_valid_time: 3600
-
-    - name: Install Nginx
-      apt:
-        name: nginx
-        state: present
-
-    - name: Start and enable Nginx service
-      service:
-        name: nginx
-        state: started
-        enabled: yes
-
-    - name: Install dependencies for Docker
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: present
-
-    - name: Add Docker official GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-
-    - name: Install Docker
-      apt:
-        name: docker-ce
-        state: present
-
-    - name: Ensure Docker service is started
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Install Docker Compose
-      get_url:
-        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system | lower }}-{{ ansible_architecture }}"
-        dest: /usr/local/bin/docker-compose
-        mode: '0755'
-
-    - name: Create application directory
-      file:
-        path: /home/ubuntu/app
-        state: directory
-
-    - name: Copy Node.js application Dockerfile
-      copy:
-        src: /home/ubuntu/node-react-jenkins/api/Dockerfile
-        dest: /home/ubuntu/app/Dockerfile
-
-    - name: Synchronize Node.js application files
-      synchronize:
-        src: /home/ubuntu/node-react-jenkins/api/
-        dest: /home/ubuntu/app/
-        rsync_opts:
-          - "--exclude Dockerfile"
-    
-    - name: Build Docker image
-      command: docker build -t nodejs-app .
-      args:
-        chdir: /home/ubuntu/app
-
-    - name: Run Docker container
-      docker_container:
-        name: nodejs-app
-        image: nodejs-app
-        state: started
-        ports:
-          - "3000:3000"
-
-    - name: Configure Nginx as reverse proxy
-      copy:
-        content: |
-          server {
-              listen 80;
-
-              location / {
-                  proxy_pass http://localhost:3000;
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
-                  proxy_set_header Connection 'upgrade';
-                  proxy_set_header Host $host;
-                  proxy_cache_bypass $http_upgrade;
-              }
-          }
-        dest: /etc/nginx/sites-available/default
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: Restart Nginx service
-      service:
-        name: nginx
-        state: restarted
-```
-
 
 
 ### Usage
@@ -549,26 +409,6 @@ ansible-playbook -i hosts.ini nginx_setup.yml
 ### Execution Instructions
 
 ### Docker Deployment
-- `Navigate to the directory containing the inventory file and playbook file`
-- `nginx_setup.yml`
-
-
-### Build the Docker image
-```Build the Docker image
-docker build -t mynodeapp .
-
-```
-### Run the Docker container
-```Run the Docker container
-docker run -it -p 3000:3000 mynodeapp
-
-```
-
-
-### Execution Instructions
-
-### Docker Deployment
-- `Navigate to the directory containing the inventory file and playbook file`
 - `nginx_setup.yml`
 
 
@@ -591,11 +431,7 @@ docker run -it -p 3000:3000 mynodeapp
 kubectl apply -f deployment.yaml
 
 ```
-### Run the Docker container
-```Run the Docker container
-docker run -it -p 3000:3000 mynodeapp
 
-```
 ### Provisioning and Configuration with Terraform and Ansible
 ```Provisioning and Configuration with Terraform and Ansible
 terraform init
